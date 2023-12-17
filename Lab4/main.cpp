@@ -1,27 +1,49 @@
-#include "keyboard.hpp"
+#include "Workflow.h"
+#include "Keyboard.hpp"
 
 int main()
 {
-	AS::Keyboard key;
+    setlocale(LC_ALL, "Rus");
+    Keyboard keyboard;
 
-	key.addCommand("B", "2");
-	key.addCommand("C", "3");
-	key.addCommand("ctrl+C", "Copy");
-	key.addCommand("ctrl+V", "Paste");
-	key.addCommand("W", "Forward");	
-	key.addCommand("A", "Left");
-	key.addCommand("S", "Back");
-	key.addCommand("D", "Right");
-	
+    keyboard.registerKey("W", []() { std::cout << " W  нажата \n"; }, []() { std::cout << " W отменена \n"; });
+    keyboard.registerKey("A", []() { std::cout << " A нажата \n"; }, []() { std::cout << " A оменена\n"; });
+    keyboard.registerKey("Ctrl+C", []() { std::cout << "Ctrl+C нажата\n"; }, []() { std::cout << "Ctrl+C отменена\n"; });
+    keyboard.registerKey("Ctrl+X", []() { std::cout << "Ctrl+X нажата \n"; }, []() { std::cout << "Ctrl+X отменена\n"; });
+  
+    Workflow workflow(keyboard);
 
-	key.WorkFlow("B C ctrl+C ctrl+V W A S D");
+    workflow.add([&]() { workflow.keypress("W"); });
+    workflow.add([&]() { workflow.keypress("A"); });
+    workflow.add([&]() { workflow.keypress("Ctrl+C"); });
+    workflow.add([&]() { workflow.keypress("Ctrl+X"); });
 
-	key.Undo();
-	key.Undo();
-	key.Undo();
-	key.Undo();
-	key.Undo();
+    workflow.add([&]() { workflow.undo(); });
+    workflow.add([&]() { workflow.undo(); });
 
-	return 0;
+    std::cout << "Первый запуск\n";
+    workflow.run();
 
+    std::cout << "\nПереназначение клавиш и перезапуск\n";
+    keyboard.registerKey("W",
+        []() {std::cout << " W отвечает за движение вперед\n"; },
+        []() { std::cout << " W\n"; } );
+    keyboard.registerKey("A",
+        []() { std::cout << " A отвечает за движение влево\n"; },
+        []() { std::cout << "отмена A\n"; });
+    keyboard.registerKey("Ctrl+C",
+        []() { std::cout << " Ctrl+C копирует выбранный текст\n"; },
+        []() { std::cout << "отмена Ctrl+C\n";});
+    keyboard.registerKey("Ctrl+X",
+        []() { std::cout << "Ctrl+X вырезает выбранный текст\n"; },
+        []() { std::cout << "отмена Ctrl+X\n"; });
+
+    workflow.run();
+
+    if (keyboard.isKeyRegistered("W"))
+    {
+        std::cout << "Клавиша W зарегистрирована в системе\n";
+    }
+
+    return 0;
 }

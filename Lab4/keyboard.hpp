@@ -1,35 +1,31 @@
-#pragma once
+#pragma once 
 #include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
+#include <functional>
+#include <deque>
 #include <thread>
 #include <chrono>
-
-namespace AS
+#include <map>
+#include <cassert>
+#include <vector>
+#include <windows.h>
+using Action = std::function<void()>;
+using Keymap = std::map<std::string, std::pair<Action, Action>>;
+class Keyboard
 {
-	class Keyboard
-	{
-	public:
-		Keyboard();
-		~Keyboard();
+public:
+    void registerKey(const std::string& key, const Action& action, const Action& undoAction = []() {})
+    {
+        keymap[key] = { action, undoAction };
+    }
 
-		void addCommand(const std::string& key, const std::string& cmd);
+    void pressKey(const std::string& key);
 
-		void pressKey(const std::string& key);
+    void undo();
 
-		void WorkFlow(const std::string& strKey);
+    bool isKeyRegistered(const std::string& key) const;
 
-		void Undo();
+private:
+    Keymap keymap;
+    std::deque<std::string> history; 
+};
 
-	private:
-
-		std::string _keys, _pressedKey;
-		std::vector<std::string> keys_vector;
-		std::unordered_map<std::string, std::string> _commands;
-
-		void parse(std::string keys);
-
-	};
-}
