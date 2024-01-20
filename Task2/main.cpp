@@ -1,192 +1,154 @@
-//Создать класс натуральная дробь.
-//Добавить методы сложение, вычитание, деление, умножение, перевод в десятичную дробь
-// и выделение целой части.
-#include<iostream>
-#include<string>
-#include "main.h"
+п»ї#include <iostream>
+#include <string>
+
 using namespace std;
 
-class Calc
-{
-public:
-	Calc() {
-		numer = 0;// числитель
-		denom = 0;//знаменатель
-		wholepart = 0;//для выделения целой части
-	}
 
-	Calc(int n, int d) {
-		numer = n;
-		denom = d;
-		wholepart = 0;
-	}
-	//Извлекаем значения перменных числителя и знаменателя
-	int getNumer() const { return numer; }
-	int getDenom() const { return denom; }
-	//Присваиваем значения
-	void set(int n, int d) {
-		numer = n;
-		denom = d;
-	}
-
-	// Функция вывода в консоль
-	void print() {
-		if (wholepart != 0)
-			cout << wholepart << "+";
-		cout << numer <<'/' << denom <<endl;
-	}
-
-	// Функция ввода с консоли
-	bool read() {
-		string str;
-		getline(cin, str);
-		int sep = str.find('/');
-		int num, dem;
-		try {
-			num = stoi(str.substr(0, sep));
-			dem = stoi(str.substr(sep + 1));
-		}
-		catch (...) {
-			cout << "Ошибка! Введите целое число." << endl;
-			return 0;
-		}
-		if (dem == 0) {
-			cout <<" Ошибка!Знаменатель не может быть равен нулю." << endl;
-			return 0;
-		}
-		this->set(num, dem);
-		return 1;
-	}
-		
-	
-	
-
-
-	// Функция сокращения дроби
-	void reducing() {
-		int gcd_value = gcd(numer, denom);
-		numer /= gcd_value;
-		denom /= gcd_value;
-	}
-
-
-
-	// Функция перевода рациональной дроби в десятичную дробь
-	float toDecimal() {
-		cout << "Перевод в десятичную дробь:" << endl;
-		float tmp = float(numer) / float(denom);
-		return tmp;
-	}
-
-	// Функция выделения целой части
-	Calc wholePart() {
-		cout << "Выделение целой части:" <<endl;
-		Calc tmp;
-		if (numer < denom)
-			tmp = *this;
-		else {
-			tmp.wholepart = numer / denom;
-			tmp.numer = numer - denom * tmp.wholepart;
-			tmp.denom = denom;
-		}
-		return tmp;
-	}
-
-	//Перегрузка операторов и методы, ссылающиеся на перегрузку
-	void operator=(const Calc& r) {
-		numer = r.getNumer();
-		denom = r.getDenom();
-	}
-	//Сложение
-	Calc operator+(const Calc& r) {
-		Calc tmp;
-		tmp.numer = numer * r.getDenom() + denom * r.getNumer();
-		tmp.denom = denom * r.getDenom();
-		tmp.reducing();
-		return tmp;
-	}
-
-	Calc add(const Calc& r) {
-		cout<< "Сложение:" <<endl;
-		Calc tmp = *this + r;
-		return tmp;
-	}
-	//Вычитание
-	Calc operator-(const Calc& r) {
-		Calc tmp;
-		tmp.numer = numer * r.getDenom() - denom * r.getNumer();
-		tmp.denom = denom * r.getDenom();
-		tmp.reducing();
-		return tmp;
-	}
-
-	Calc subtract(const Calc& r) {
-		cout << "Вычитание:" << endl;
-		Calc tmp = *this - r;
-		return tmp;
-	}
-	//Произведение
-	Calc operator*(const Calc& r) {
-		Calc tmp;
-		tmp.numer = numer * r.getNumer();
-		tmp.denom = denom * r.getDenom();
-		tmp.reducing();
-		return tmp;
-	}
-
-	Calc multiply(const Calc& r) {
-		cout<< "Умножение:" << endl;
-		Calc tmp = *this * r;
-		return tmp;
-	}
-	//Деление
-	Calc operator/(const Calc& r) {
-		Calc tmp;
-		tmp.numer = numer * r.getDenom();
-		tmp.denom = denom * r.getNumer();
-		tmp.reducing();
-		return tmp;
-	}
-
-	Calc divide(const Calc& r) {
-		cout<< "Деление:" <<endl;
-		Calc tmp = *this / r;
-		return tmp;
-	}
-	
-
+class Fraction {
 private:
-	int wholepart;
-	int numer;
-	int denom;
-	
+    int numerator; 
+    int denominator;
 
-	//Наибольший общий делитель
-	int gcd(int a, int b)
-	{
-		if (b == 0) return a;
-		return gcd(b, a % b);
-	}
+public:
+    Fraction(int n, int d) : numerator(n), denominator(d) {
+        if(d == 0)
+            throw "Р”РµР»РµРЅРёРµ РЅР° РЅСѓР»СЊ РЅРµРІРѕР·РјРѕР¶РЅРѕ!";
+    }
+    
+   static int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+
+    int getNumerator() const { return numerator; }
+    int getDenominator() const { return denominator; }
+
+    Fraction operator+(const Fraction& other) const {
+        int newNumerator = numerator * other.denominator + other.numerator * denominator;
+        int newDenominator = denominator * other.denominator;
+        int c = gcd(newNumerator, newDenominator);
+        newNumerator = newNumerator / c;
+        newDenominator = newDenominator / c;
+
+        return Fraction(newNumerator, newDenominator);
+    }
+
+    Fraction operator-(const Fraction& other) const {
+        int newNumerator = numerator * other.denominator - other.numerator * denominator;
+        int newDenominator = denominator * other.denominator;
+        int c = gcd(newNumerator, newDenominator);
+        newNumerator = newNumerator / c;
+        newDenominator = newDenominator / c;
+
+        return Fraction(newNumerator, newDenominator);
+    }
+
+    Fraction operator*(const Fraction& other) const {
+        int newNumerator = numerator * other.numerator;
+        int newDenominator = denominator * other.denominator;
+        int c = gcd(newNumerator, newDenominator);
+        newNumerator = newNumerator / c;
+        newDenominator = newDenominator / c;
+        return Fraction(newNumerator, newDenominator);
+    }
+
+    Fraction operator/(const Fraction& other) const {
+        int newNumerator = numerator * other.denominator;
+        int newDenominator = denominator * other.numerator;
+        int c = gcd(newNumerator, newDenominator);
+        newNumerator = newNumerator / c;
+        newDenominator = newDenominator / c;
+        return Fraction(newNumerator, newDenominator);
+    }
+
+
+
+    double Decimal() const {
+        return static_cast<double>(numerator) / static_cast<double>(denominator);
+    }
+
+    Fraction inverse() const {
+        return Fraction(denominator, numerator);
+    }
 };
-
-int main()
-
+    
+ int main()
 {
-	setlocale(LC_ALL, "Russian");
-	Calc x, y;
-	cout << "Введите первую дробь(числитель и знаменатель через /): ";
-	x.read();
-	cout << "Введите вторую дробь(числитель и знаменатель через /): ";
-	cout << endl;
-	y.read();
-	Calc z = x.add(y);
-	z.print();
-	z.wholePart().print();
-	cout << z.toDecimal() << endl;
-	x.subtract(y).print();
-	x.multiply(y).print();
-	x.divide(y).print();
+     try {
+         
+         setlocale(LC_ALL, "Rus");
+         int a;
+         int b;
+         int c;
+         int d;
+         char operation;
+         std::string reply1;
+         std::cout << "Р’РІРµРґРёС‚Рµ С‡РёСЃР»РёС‚РµР»СЊ РїРµСЂРІРѕР№ РґСЂРѕР±Рё" << std::endl;
+         std::cin >> a;
+         std::cout << "Р’РІРµРґРёС‚Рµ Р·РЅР°РјРµРЅР°С‚РµР»СЊ РїРµСЂРІРѕР№ РґСЂРѕР±Рё" << std::endl;
+         std::cin >> b;
+         std::cout << "Р’Р°Рј РЅСѓР¶РЅР° РІС‚РѕСЂР°СЏ РґСЂРѕР±СЊ? Р’РІРµРґРёС‚Рµ 'Yes' РёР»Рё 'No'" << std::endl;
+         std::cin >> reply1;
+         if (reply1 == "Yes")
+         {
+             std::cout << "Р’РІРµРґРёС‚Рµ С‡РёСЃР»РёС‚РµР»СЊ РІС‚РѕСЂРѕР№ РґСЂРѕР±Рё" << std::endl;
+             std::cin >> c;
+             std::cout << "Р’РІРµРґРёС‚Рµ Р·РЅР°РјРµРЅР°С‚РµР»СЊ РІС‚РѕСЂРѕР№ РґСЂРѕР±Рё" << std::endl;
+             std::cin >> d;
+             cout << "Р’РІРµРґРёС‚Рµ РѕРїРµСЂР°С†РёСЋ (+, -, *, /) " << std::endl;
+             cin >> operation;
+             Fraction r1(a, b);
+             Fraction r2(c, d);
+             Fraction f3(c, d);
+             switch (operation) {
+             case '+':
+                 f3 = r1 + r2;
+                 std::cout << "Р РµР·СѓР»СЊС‚Р°С‚: " << f3.getNumerator() << "/" << f3.getDenominator() << std::endl;
+                 break;
+             case '-':
+                 f3 = r1 - r2;
+                 std::cout << "Р РµР·СѓР»СЊС‚Р°С‚: " << f3.getNumerator() << "/" << f3.getDenominator() << std::endl;
+                 break;
+             case '*':
+                 f3 = r1 * r2;
+                 std::cout << "Р РµР·СѓР»СЊС‚Р°С‚: " << f3.getNumerator() << "/" << f3.getDenominator() << std::endl;
+                 break;
+             case '/':
+                 f3 = r1 / r2;
+                 std::cout << "Р РµР·СѓР»СЊС‚Р°С‚: " << f3.getNumerator() << "/" << f3.getDenominator() << std::endl;
+                 break;
+             default:
+                 cout << "РќРµРІРµСЂРЅР°СЏ РѕРїРµСЂР°С†РёСЏ." << endl;
+             }
+         }
+         else
+         {
+             cout << "Р’РІРµРґРёС‚Рµ РѕРїРµСЂР°С†РёСЋ (#-Р”РµСЃСЏС‚РёС‡РЅР°СЏ РґСЂРѕР±СЊ,-1-РћР±СЂР°С‚РЅР°СЏ РґСЂРѕР±СЊ): " << std::endl;
+             cin >> operation;
+             Fraction r1(a, b);
+             double f3;
+             switch (operation) {
+             case '#':
+                 f3 = r1.Decimal();
+                 std::cout << "Р РµР·СѓР»СЊС‚Р°С‚: " << f3 << std::endl;
+                 break;
 
-	return 0;
+             case '-1':
+                 r1 = r1.inverse();
+                 std::cout << "Р РµР·СѓР»СЊС‚Р°С‚: " << r1.getNumerator() << "/" << r1.getDenominator() << std::endl;
+                 break;
+             default:
+                 cout << "РќРµРІРµСЂРЅР°СЏ РѕРїРµСЂР°С†РёСЏ." << endl;
+             }
+         }
+     }
 
+     catch (const char* error_message)
+     {
+         std::cout << error_message << std::endl;
+     }
+    
 }
