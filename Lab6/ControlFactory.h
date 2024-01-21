@@ -1,9 +1,16 @@
 #pragma once
-#include "Control.h"
 
-class ControlFactory {
+#include "Label.h"
+#include "TextBox.h"
+#include "ComboBox.h"
+#include "Button.h"
+
+__interface ControlFactory
+{
 public:
-    virtual Control* createForm() = 0;
-    virtual Control* createLabel() = 0;
-    virtual ~ControlFactory() {}
+    Label* createLabel();
+    TextBox* createTextBox();
+    ComboBox* createComboBox();
+    Button* createButton(); 
+    
 };
