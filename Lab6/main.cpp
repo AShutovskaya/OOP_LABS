@@ -6,14 +6,15 @@ int main()
 {
 	
 	std::cout << "Linux" << '\n' << '\n';
-	
+	//вопросы по коду во время беседы
+	//ответ в видео
 	std::unique_ptr<ControlFactory> controlFactory(new LinControlFactory());
-	
 	std::unique_ptr<Label> label(controlFactory->createLabel());
 	std::unique_ptr<TextBox> textBox(controlFactory->createTextBox());
 	std::unique_ptr<ComboBox> comboBox(controlFactory->createComboBox());
 	std::unique_ptr<Button> button(controlFactory->createButton());
-
+	//вопросы по коду во время беседы
+	//ответ в видео
 	if (dynamic_cast<LinControlFactory*>(controlFactory.get()) != nullptr) 
 	{
 		LinButton* linButton = dynamic_cast<LinButton*>(button.get());
