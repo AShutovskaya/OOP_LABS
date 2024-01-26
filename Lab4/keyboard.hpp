@@ -8,6 +8,8 @@
 #include <cassert>
 #include <vector>
 #include <windows.h>
+//вопрос во время беседы
+//ответ в видео
 using Action = std::function<void()>;
 using Keymap = std::map<std::string, std::pair<Action, Action>>;
 class Keyboard
