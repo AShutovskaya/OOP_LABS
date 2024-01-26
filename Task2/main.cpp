@@ -26,6 +26,8 @@ public:
     int getNumerator() const { return numerator; }
     int getDenominator() const { return denominator; }
 
+    //возник вопрос во время беседы по поводу 'const' после списка аргументов
+    //ответ в видео
     Fraction operator+(const Fraction& other) const {
         int newNumerator = numerator * other.denominator + other.numerator * denominator;
         int newDenominator = denominator * other.denominator;
@@ -67,6 +69,8 @@ public:
 
 
     double Decimal() const {
+        //возник вопрос во время беседы по поводу static_cast<double
+        //ответ в видео
         return static_cast<double>(numerator) / static_cast<double>(denominator);
     }
 
@@ -76,16 +80,14 @@ public:
 };
     
  int main()
+
 {
+     setlocale(LC_ALL, "Rus");
+     int a, b, c, d;
+     char operation;
+     std::string reply1;
      try {
          
-         setlocale(LC_ALL, "Rus");
-         int a;
-         int b;
-         int c;
-         int d;
-         char operation;
-         std::string reply1;
          std::cout << "Введите числитель первой дроби" << std::endl;
          std::cin >> a;
          std::cout << "Введите знаменатель первой дроби" << std::endl;
